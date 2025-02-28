@@ -25,6 +25,10 @@ body {
     height: 96px;
     background-color:#808080;
     margin: 12px;
+    font-size: 64px;
+    display: flex;
+    align-items:flex-end;
+    justify-content: flex-end;
 }
 
 .btn-content {
