@@ -9,39 +9,52 @@
  let oprVar = " ";
  let checkerForLive = false;
  let checkerForPer = false;
+ let checkerForFlag = false;
 
  // operator function
- function operator(fir, opr, sec){
-    const minusChar = "\u2212"
-    const plusChar = "\u002B"
-    const divideChar = "\u00F7";
-    const multiplyChar = "\u00D7";
+function operator(fir, opr, sec){
+    const operators = {
+        "\u002B": (a, b) => a + b,
+        "\u2212": (a, b) => a - b,
+        "\u00F7": (a, b) => a / b,
+        "\u00D7": (a, b) => a * b
+    };
 
-    if(opr===plusChar) return fir + sec;
-    else if(opr===minusChar) return fir - sec;
-    else if(opr===divideChar) return fir / sec;
-    else if(opr===multiplyChar) return fir * sec;
- }
+    return operators[opr] ? operators[opr](fir, sec) : null;
+}
+
+function displayVar(disp){
+    if((disp > 9999999) || (disp < 0.00000001)){
+        display.textContent = disp.toExponential(4);
+    }else if(!(disp > 9999999) && !(disp < 0.00000001) && display.textContent.length >= 10){
+        display.textContent = disp.toString().slice(0, 10)
+    }else {
+        display.textContent = disp;
+    }
+}
 
 
  document.addEventListener('click', (e)=>{
     let target = e.target; 
     if(target.className.includes("num") && isOprClicked === false){
-        display.textContent += target.textContent;
-        liveVar += target.textContent; 
+        display.textContent += display.textContent.length <= 10 ? target.textContent: "";
+        console.log(display.textContent.length)
+    liveVar += target.textContent; 
         // console.log(`This is the First variable: ${liveVar}`)
     }else if(target.className.includes("num") && isOprClicked === true){
         if(checkerForLive === true){
             display.textContent = "";
             display.textContent += display.textContent.length <= 10 ? target.textContent: "";
-            console.log(display.textContent.length)
             checkerForLive = false;
         }else {
-            display.textContent += target.textContent;
+            display.textContent += display.textContent.length <= 10 ? target.textContent: "";
+            console.log(display.textContent.length)
         }
         secVar += target.textContent; 
         // console.log(`This is the Second variable: ${secVar}`)
-    }else if(target.className.includes("opr") && secVar.length === 0){
+    }else if((target.className.includes("opr") && secVar.length === 0) || (target.className.includes("opr") && checkerForFlag === true)){
+        secVar = " ";
+        checkerForFlag = false;
         checkerForLive = true;
         oprVar = target.textContent;
         // console.log(`This is the Operator: ${oprVar}`);
@@ -50,18 +63,20 @@
         let liveVarInt = parseFloat(liveVar);
         let secVarInt = parseFloat(secVar);
         liveVar = operator(liveVarInt, oprVar, secVarInt);
-        // console.log(`This are Bunch of Values: ${liveVarInt} ${oprVar} ${secVarInt} = ${liveVar}`);
-        display.textContent = liveVar.length <= 10 ? liveVar : liveVar.toString().slice(0, 10);
-        secVar = ""
+        console.log(`This are Bunch of Values: ${liveVarInt} ${oprVar} ${secVarInt} = ${liveVar}`);
+        display.textContent = liveVar.toString().length <= 10 ? liveVar : liveVar.toString().slice(0, 10);
+        console.log(`${liveVar} ${typeof liveVar}`)
+        displayVar(liveVar);
+        checkerForFlag = true;
     }else if(target.className.includes("opr") && !(secVar.length === 0)){
         checkerForLive = true;
 
         let liveVarInt = parseFloat(liveVar);
         let secVarInt = parseFloat(secVar);
         liveVar = operator(liveVarInt, oprVar, secVarInt);
-        // console.log(`This are Bunch of Values: ${liveVarInt} ${oprVar} ${secVarInt} = ${liveVar}`);
+        console.log(`This are Bunch of Values: ${liveVarInt} ${oprVar} ${secVarInt} = ${liveVar}`);
 
-        display.textContent = liveVar.length <= 10 ? liveVar : liveVar.toString().slice(0, 10);
+        displayVar(liveVar);
         oprVar = target.textContent;
 
         // console.log(`This is the Operator: ${oprVar}`);
