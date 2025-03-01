@@ -1,10 +1,12 @@
+ // some constant values
+
  const MAX_DISPLAY_LENGTH = 10;
  const MAX_VALUE = 9999999999;
  const MIN_VAlUE = 0.000001;
 
  const display = document.querySelector(".display");
 
-
+// some variables and flags used throughout the code
  let liveVar = " ";
  let isOprClicked = false;
  let secVar = "";
@@ -22,15 +24,15 @@ function operator(fir, opr, sec){
         "\u00D7": (a, b) => a * b,
         "Xn": (a, b) => Math.pow(a, b)
     };
-
+    let result = operators[opr] ? operators[opr](fir, sec) : null;
     if(opr === "\u00F7" && sec === 0){
         return "U DUMB🤣"
-    }else if (operators[opr](fir, sec) === Infinity){
+    }else if (result === Infinity){
         return "BOOM💥"
-    }else if (operators[opr](fir, sec) === NaN){
+    }else if (isNaN(result)){
         return "STOP🤚"
     }else {
-        return operators[opr] ? operators[opr](fir, sec) : null;
+        return result;
     }
 }
 
@@ -145,6 +147,9 @@ function handlePercentClick(){
         }
     }
 }
+
+// The Main Event Listener which directs to the different functions 
+// ... depending on the button clicked
 
  document.addEventListener('click', (e)=>{
     let target = e.target; 
