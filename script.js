@@ -43,7 +43,7 @@ function displayVar(disp){
 }
 
 
- document.addEventListener('pointerdown', (e)=>{
+ document.addEventListener('click', (e)=>{
     let target = e.target; 
     if(target.className.includes("num") && isOprClicked === false){
         display.textContent += display.textContent.length <= 10 ? target.textContent: "";
@@ -66,6 +66,7 @@ function displayVar(disp){
         checkerForFlag = false;
         checkerForLive = true;
         oprVar = target.textContent;
+        display.textContent += oprVar
         // console.log(`This is the Operator: ${oprVar}`);
         isOprClicked = true;
     }else if(target.className.includes("equals")){
@@ -87,6 +88,7 @@ function displayVar(disp){
 
         displayVar(liveVar);
         oprVar = target.textContent;
+        display.textContent += oprVar;
 
         // console.log(`This is the Operator: ${oprVar}`);
         secVar = ""
