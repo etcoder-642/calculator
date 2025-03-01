@@ -1,3 +1,12 @@
+ /**
+  * Things to work for later:
+  * 1. When the numbers become to large on the negative side it starts to cut them
+  *    Fot example if a number is -2.23456743578234689876+e54 it doesn't cut it into 4 digits
+  *    ... like it does in the positive side and it is also the same for extremely small numbers
+  *    ... from the negative side
+  * 2. Make the Del button work and find a way to find AC and Del functionality to the keyboard.
+  */
+ 
  // some constant values
 
  const MAX_DISPLAY_LENGTH = 10;
@@ -54,30 +63,31 @@ function updateDisplay(text){
     display.textContent += display.textContent.length <= MAX_DISPLAY_LENGTH ? text: "";
 }
 
-// This function handles a scenario where the number are values are clicked
+// This function handles a scenario where a number is clicked
 
 function handleNumberClick(Input){
     // The isOprClicked flag checks if an operator is clicked if it is not 
     // ... it will transport the data to liveVar
     //... otherwise it will transport user inputted data to secVar
     if(isOprClicked === false){
-        updateDisplay(Input.textContent);
+        updateDisplay(Input);
         // console.log(display.textContent.length)
-    liveVar += Input.textContent; 
+    liveVar += Input; 
         // console.log(`This is the First variable: ${liveVar}`)
     }else {
         if(checkerForLive === true){
             display.textContent = "";
-            updateDisplay(Input.textContent);
+            updateDisplay(Input);
             checkerForLive = false;
         }else {
-            updateDisplay(Input.textContent);
+            updateDisplay(Input);
             // console.log(display.textContent.length)
         }
-        secVar += Input.textContent; 
+        secVar += Input; 
         // console.log(`This is the Second variable: ${secVar}`)
     }
 }
+
 
 // This function handles a scenario where the operators are clicked
 
@@ -86,7 +96,7 @@ function handleOperatorClick(Input){
         secVar = " ";
         checkerForFlag = false;
         checkerForLive = true;
-        oprVar = Input.textContent;
+        oprVar = Input;
         // console.log(`This is the Operator: ${oprVar}`);
         isOprClicked = true;
     }else if(!(secVar.length === 0)){
@@ -98,7 +108,7 @@ function handleOperatorClick(Input){
         // console.log(`This are Bunch of Values: ${liveVarInt} ${oprVar} ${secVarInt} = ${liveVar}`);
 
         displayVar(liveVar);
-        oprVar = Input.textContent;
+        oprVar = Input;
 
         // console.log(`This is the Operator: ${oprVar}`);
         secVar = ""
@@ -154,13 +164,34 @@ function handlePercentClick(){
  document.addEventListener('click', (e)=>{
     let target = e.target; 
     if(target.className.includes("num")){
-        handleNumberClick(target);
+        handleNumberClick(target.textContent);
     }else if(target.className.includes("opr")){
-        handleOperatorClick(target);
+        handleOperatorClick(target.textContent);
     }else if(target.className.includes("equals")){
         handleEqualsClick();
     }else if(target.className.includes("per")){
         handlePercentClick();
     }else if(target.className.includes("alt")) location.reload();
  })
+
+ document.addEventListener('keypress', (e)=>{
+    let num = "1234567890.";
+    let opr = "+-*/^";
+    if(num.includes(e.key.toString())){
+        handleNumberClick(e.key);
+    }else if(opr.includes(e.key.toString())){
+        const operatorMap = {
+            "+": "\u002B",
+            "-": "\u2212",
+            "*": "\u00D7",
+            "/": "\u00F7",
+            "^": "Xn"
+        };
+        if (operatorMap[e.key]) {
+            handleOperatorClick(operatorMap[e.key]);
+        } 
+    }else if(e.key.toString() === "="){
+        handleEqualsClick();
+    }
+})
 
