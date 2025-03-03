@@ -19,12 +19,14 @@
 
 // some variables and flags used throughout the code
  let liveVar = " ";
- let isOprClicked = false;
  let secVar = "";
  let oprVar = " ";
+
+ let isOprClicked = false;
  let checkerForLive = false;
  let checkerForEqualsInPer = false;
  let checkerForFlag = false;
+ let checkerForDelete = false;
 
  // operator function
 function operator(fir, opr, sec){
@@ -75,6 +77,7 @@ function hardReset(){
     checkerForLive = false;
     checkerForEqualsInPer = false;
     checkerForFlag = false;
+    checkerForDelete = false;
 
     display.textContent = "";
 }
@@ -82,15 +85,14 @@ function hardReset(){
 // This function handles a scenario where a number is clicked
 
 function handleNumberClick(Input){
-    // The isOprClicked flag checks if an operator is clicked if it is not 
-    // ... it will transport the data to liveVar
-    //... otherwise it will transport user inputted data to secVar
     if(isOprClicked === false){
+        checkerForDelete = true;
         updateDisplay(Input);
         console.log(display.textContent.length)
         liveVar += liveVar.length < MAX_DISPLAY_LENGTH+2 ? Input: ""; 
         console.log(`This is the First variable: ${liveVar}`)
     }else {
+        checkerForDelete = false;
         if(checkerForLive === true){
             display.textContent = "";
             updateDisplay(Input);
@@ -108,21 +110,17 @@ function handleNumberClick(Input){
 // This function handles a scenario where the operators are clicked
 
 function handleOperatorClick(Input){
-    // checkerForFlag checks if the equals sign was clicked before an operator was clicked
-    // let's say a user clicks 2 => + => 5 => * at this instance the display will change to 10 and 
-    // clicking an operator triggers a caculation. But this maynot be an ideal situation every time.
-    // Like if a user clicks 2 => + => 6 => = => - the output will 14 instead of 8. because both the equals button and 
-    // the sign button was clicked the calculation will be triggered twice and hence 6 added twice. To prevent this we
-    // can use checkerForFlag flag.
     if((secVar.length === 0) || (checkerForFlag === true)){
         secVar = " ";
         checkerForFlag = false;
         checkerForLive = true;
+        console.log(checkerForLive)
         oprVar = Input;
         console.log(`This is the Operator: ${oprVar}`);
         isOprClicked = true;
     }else if(!(secVar.length === 0)){
         checkerForLive = true;
+        checkerForDelete = true;
 
         let liveVarInt = parseFloat(liveVar);
         let secVarInt = parseFloat(secVar);
@@ -143,26 +141,23 @@ function handleEqualsClick(){
     let liveVarInt = parseFloat(liveVar);
     let secVarInt = parseFloat(secVar);
     liveVar = operator(liveVarInt, oprVar, secVarInt);
-    console.log(`This are Bunch of Values: ${liveVarInt} ${oprVar} ${secVarInt} = ${liveVar}`);
+    // console.log(`This are Bunch of Values: ${liveVarInt} ${oprVar} ${secVarInt} = ${liveVar}`);
     display.textContent = liveVar.toString().length <= 10 ? liveVar : liveVar.toString().slice(0, 10);
-    console.log(`${liveVar} ${typeof liveVar}`)
+    // console.log(`${liveVar} ${typeof liveVar}`)
     displayVar(liveVar);
     checkerForFlag = true;
     checkerForEqualsInPer = true;
+    checkerForDelete = true;
 }
 
 // handles percentile Click
 
 function handlePercentClick(){
+    checkerForDelete = true;
     if((secVar.length === 0)){
         liveVar /= 100;
         displayVar(liveVar);
     }else{
-        // the reason checkerForEqualsInPer is used is to prevent edge cases like where the user clicks a number then another number then 
-        // ... the percentage button. Let's say the user clicks 5 then + then 5 then the percentage button the result should computed to 0.1.
-        // ... but since the user have not clicked another operator or the equals button the result of 5 + 5 have not been yet been computed to 10 by the operator function.
-        // ... hence the result was shown to be 0.05. So the checkerForEqualsInPer is used to prevent this edge case by checking if the user have clicked the if
-        // ... equals button was clicked in between. If so it will compute the calculation by itself
         if(checkerForEqualsInPer === false) {
             let liveVarInt = parseFloat(liveVar);
             let secVarInt = parseFloat(secVar);
@@ -222,18 +217,18 @@ function handlePercentClick(){
         if (operatorMap[e.key]) {
             handleOperatorClick(operatorMap[e.key]);
         } 
-    }else if(e.key.toString() === "="){
+    }else if(e.key.toString() === "=" ||e.key.toString() === "Enter"){
         handleEqualsClick();
     }
 })
 
 // The delete function
 document.addEventListener('keydown', (e) =>{
-    if(e.key === 'Delete' && isOprClicked === false){
-        liveVar = liveVar.toString().slice(0, liveVar.length-1);
-        console.log(`This is the first variable ${liveVar}`)
+    if(e.key === 'Delete' && checkerForDelete === true){
+        liveVar = liveVar.toString().slice(0, liveVar.toString().length-1);
+        console.log(`This is the first Variable ${liveVar}`)
         display.textContent = liveVar;
-    }else if(e.key === 'Delete' && isOprClicked === true){
+    }else if(e.key === 'Delete' && checkerForDelete === false){
         secVar = secVar.toString().slice(0, secVar.length-1); 
         display.textContent = secVar;
         console.log(`This is the second Variable ${secVar}`)       
@@ -241,8 +236,9 @@ document.addEventListener('keydown', (e) =>{
     if(e.key === 'Backspace'){
         hardReset();
     }
-    console.log(e.key)
-})    
+})   
+
+
 
 
 
