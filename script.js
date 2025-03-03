@@ -175,6 +175,22 @@ function handlePercentClick(){
     }
 }
 
+// handles the deletion of values when the delte key is clicked
+
+
+function deleteKey(){
+    if(checkerForDelete === true){
+        liveVar = liveVar.toString().slice(0, liveVar.toString().length-1);
+        console.log(`This is the first Variable ${liveVar}`)
+        display.textContent = liveVar;
+    }else if(checkerForDelete === false){
+        secVar = secVar.toString().slice(0, secVar.length-1); 
+        display.textContent = secVar;
+        console.log(`This is the second Variable ${secVar}`)       
+    }
+}
+
+
 // The Main Event Listener which directs to the different functions 
 // ... depending on the button clicked
 
@@ -196,12 +212,15 @@ function handlePercentClick(){
         case target.className.includes("alt"):
             hardReset();           
             break;
+        case target.className.includes("del"):
+            deleteKey();
+            break;
     }
 })
 
  // The Event Listener which adds functionality for a keyboard input.
 
- document.addEventListener('keypress', (e)=>{
+ document.addEventListener('keydown', (e)=>{
     let num = "1234567890.";
     let opr = "+-*/^";
     if(num.includes(e.key.toString())){
@@ -219,25 +238,13 @@ function handlePercentClick(){
         } 
     }else if(e.key.toString() === "=" ||e.key.toString() === "Enter"){
         handleEqualsClick();
-    }
-})
-
-// The delete function
-document.addEventListener('keydown', (e) =>{
-    if(e.key === 'Delete' && checkerForDelete === true){
-        liveVar = liveVar.toString().slice(0, liveVar.toString().length-1);
-        console.log(`This is the first Variable ${liveVar}`)
-        display.textContent = liveVar;
-    }else if(e.key === 'Delete' && checkerForDelete === false){
-        secVar = secVar.toString().slice(0, secVar.length-1); 
-        display.textContent = secVar;
-        console.log(`This is the second Variable ${secVar}`)       
-    }
-    if(e.key === 'Backspace'){
+    }else if(e.key === "Delete"){
+        deleteKey();
+    }else if(e.key === 'Backspace'){
         hardReset();
     }
-})   
 
+})
 
 
 
