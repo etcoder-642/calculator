@@ -60,7 +60,7 @@ body {
     color: white;
 }
 
-.alt:hover{
+.alt:hover, .del:hover{
     background-color: red;
     color: white;
 }
